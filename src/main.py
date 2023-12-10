@@ -4,11 +4,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'  # Suppress TensorFlow logging
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress TensorFlow logging
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging
 
-from data_handler import get_data_frame
+from data_handler import get_data_frame, remove_outliers
 from models import dnn_model, svm_model
+from plotter import model_accuracy_plot, model_error_plot
 
-import seaborn as sns
-from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 
@@ -56,7 +55,7 @@ def main():
     y = df['class']
 
     # Balence between objects 
-    sm = SMOTE(random_state=2202301)
+    sm = SMOTE(random_state=220301)
     X, y = sm.fit_resample(X, y)
 
     # create split
@@ -69,56 +68,22 @@ def main():
 
     # Run DNN
     model, history = dnn_model(X_train_scaled, X_test_scaled, y_train, y_test, input_dim)
-    
-    # Run SVM
-    score = svm_model(X_train_scaled, X_test_scaled, y_train, y_test)
-    svm_score = np.mean(score)
 
     # Evaluate the model
     dnn_scores = model.evaluate(X_test_scaled, y_test)
     final_accuracy = dnn_scores[1]
+
+    # Plot DNN accuracy
+    model_accuracy_plot(history, final_accuracy)
+
+    # Run SVM
+    score, svm_clf = svm_model(X_train_scaled, X_test_scaled, y_train, y_test)
+    svm_score = np.mean(score)
+
+    # Plot Class prediction error
+    model_error_plot(svm_clf, X_train_scaled, X_test_scaled, y_train, y_test)
     
     print(f'DNN Score: {final_accuracy}\nSVM Score: {svm_score}')
-
-    # Create a figure and an axes object
-    fig, ax = plt.subplots(figsize=(8, 8))
-
-    # Plot training & validation accuracy values
-    ax.plot(history.history['accuracy'])
-    ax.plot(history.history['val_accuracy'])
-    ax.set_title('Model accuracy')
-    ax.set_ylabel('Accuracy')
-    ax.set_xlabel('Epoch')
-    ax.legend(['Train', 'Test'], loc='lower right')
-
-    # Add a horizontal line for the final accuracy
-    ax.axhline(y=final_accuracy, color='r', linestyle='--')
-
-    # Add an annotation
-    ax.annotate(f'Final Accuracy: {final_accuracy:.2f}%', 
-                 xy=(len(history.history['accuracy'])-1, final_accuracy), 
-                 xytext=(len(history.history['accuracy'])/2, final_accuracy+5),
-                 arrowprops=dict(facecolor='black', shrink=0.05),
-                 horizontalalignment='right', verticalalignment='top')
-
-    # Save the plot
-    plt.savefig('../model_accuracy_plot.png', dpi=300)
-    
-def remove_outliers(df):
-
-    for i in df.select_dtypes(include = 'number').columns:
-        qt1 = df[i].quantile(0.25)
-        qt3 = df[i].quantile(0.75)
-        iqr = qt3 - qt1
-        lower = qt1 - (1.5 * iqr)
-        upper = qt3 + (1.5 * iqr)
-        min_index = df[df[i] < lower].index
-        max_index = df[df[i] > upper].index
-        df.drop(min_index, inplace=True)
-        df.drop(max_index, inplace=True)
-
-        return df
-
 
 if __name__ == "__main__":
     main()

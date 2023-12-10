@@ -37,5 +37,5 @@ def svm_model(X_train, X_test, y_train, y_test):
     history = svm_clf.fit(X_train, y_train)
     score = svm_clf.score(X_test, y_test)
 
-    return score
+    return score, svm_clf
 
