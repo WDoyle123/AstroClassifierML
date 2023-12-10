@@ -6,7 +6,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging
 
 from data_handler import get_data_frame, remove_outliers
 from models import dnn_model, svm_model
-from plotter import model_accuracy_plot, model_error_plot
+from plotter import model_accuracy_plot, model_error_plot, log_plot
 
 import pandas as pd
 import numpy as np
@@ -22,11 +22,12 @@ def main():
     # get data
     df = get_data_frame('star_classification.csv')
 
-    # remove outliers from data
-    df = remove_outliers(df)
+    columns = list(df.columns)
 
     # turn categorical data into ints
     df['class'] = pd.factorize(df['class'])[0]
+
+    log_plot(df, columns)
 
     # crop id columns
     columns_to_drop = [col for col in df.columns if '_ID' in col]

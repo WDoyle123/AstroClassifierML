@@ -8,7 +8,7 @@ def dnn_model(X_train, X_test, y_train, y_test, input_dim):
     
     print('Running DNN Model')
 
-    # Model ~ 97.21% accurate
+    # Model ~ 96.7% accurate
     model = Sequential()
     model.add(Dense(64, activation='relu', input_dim=input_dim))
     model.add(Dropout(0.1))
@@ -32,7 +32,7 @@ def dnn_model(X_train, X_test, y_train, y_test, input_dim):
 def svm_model(X_train, X_test, y_train, y_test):
  
     print('Running SVM Model')
-    # Model ~ 95% Accurate
+    # Model ~ 96.1% Accurate
     svm_clf = svm.SVC(kernel='rbf', C=1, random_state=220301)
     history = svm_clf.fit(X_train, y_train)
     score = svm_clf.score(X_test, y_test)

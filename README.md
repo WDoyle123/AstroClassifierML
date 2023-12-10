@@ -32,12 +32,20 @@ AstroClassifierML is a machine learning project aimed at classifying space objec
 - `main.py`: Main script for executing the machine learning workflow, including data preprocessing, model training, and evaluation.
 - `data_handler.py`: Script for data extraction and preprocessing. Handles tasks like data cleaning and feature engineering.
 - `models.py`: Contains the implementation of the DNN and SVM models.
+- `plotter.py`: Handles all the plots generated from the models and data.
 
 ## Output
 
-The script outputs the accuracy of the models and generates a plot (model_accuracy_plot.png) showing the training and validation accuracy of the DNN model over epochs.
+The data contains a range of characteristcs of Stars, Galaxies and Quasars, which can be visualised here:
+![plot](figures/data_log_plot.png)
 
-![plot](model_accuracy_plot.png)
+The script outputs the accuracy of the DNN model and generates a plot showing the training and validation accuracy of the model over epochs.
+
+![plot](figures/model_accuracy_plot.png)
+
+Using the SVM model we can categories the errors in the model seen here:
+![plot](figures/model_error_plot.png)
+
 
 ## Acknowledgements
 
