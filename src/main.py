@@ -25,9 +25,14 @@ def main():
     columns = list(df.columns)
 
     # turn categorical data into ints
-    df['class'] = pd.factorize(df['class'])[0]
+    labels, unique = pd.factorize(df['class'])
+    df['class'] = labels
 
-    log_plot(df, columns)
+    # Store the mapping from number to original class
+    class_mapping = dict(enumerate(unique))
+
+    # Plot SDSS data to gain insights
+    log_plot(df, columns, class_mapping)
 
     # crop id columns
     columns_to_drop = [col for col in df.columns if '_ID' in col]
@@ -82,7 +87,7 @@ def main():
     svm_score = np.mean(score)
 
     # Plot Class prediction error
-    model_error_plot(svm_clf, X_train_scaled, X_test_scaled, y_train, y_test)
+    model_error_plot(svm_clf, X_train_scaled, X_test_scaled, y_train, y_test, class_mapping)
     
     print(f'DNN Score: {final_accuracy}\nSVM Score: {svm_score}')
 
