@@ -20,13 +20,6 @@ def model_accuracy_plot(history, final_accuracy):
     # Add a horizontal line for the final accuracy
     ax.axhline(y=final_accuracy, color='r', linestyle='--')
 
-    # Add an annotation
-    ax.annotate(f'Final Accuracy: {final_accuracy:.2f}%', 
-                 xy=(len(history.history['accuracy'])-1, final_accuracy), 
-                 xytext=(len(history.history['accuracy'])/2, final_accuracy+5),
-                 arrowprops=dict(facecolor='black', shrink=0.05),
-                 horizontalalignment='right', verticalalignment='top')
-
     # Save the plot
     plt.savefig('../figures/model_accuracy_plot.png', dpi=300)
     plt.close()
